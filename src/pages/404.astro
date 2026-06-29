@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../consts';
+---
+
+<BaseLayout title="Page not found">
+  <section class="nf container">
+    <p class="eyebrow">404</p>
+    <h1>This page wandered off.</h1>
+    <p class="nf__lede">The link may be broken, or the note may have moved.</p>
+    <p><a href={withBase('/')}>← Back to the notes</a></p>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    padding-block: var(--space-10);
+    display: grid;
+    gap: var(--space-4);
+    min-height: 40vh;
+    align-content: center;
+  }
+  .nf__lede {
+    color: var(--color-text-muted);
+    font-size: var(--step-1);
+  }
+</style>

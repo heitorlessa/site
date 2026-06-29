@@ -1,0 +1,88 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { SITE_DESCRIPTION, withBase } from '../consts';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<BaseLayout>
+  <section class="hero container">
+    <p class="eyebrow">Notes by Lessa</p>
+    <h1 class="hero__title">
+      Mental models, made to <span class="hero__accent">click</span>.
+    </h1>
+    <p class="hero__lede">{SITE_DESCRIPTION}</p>
+    <p class="hero__sub">
+      Prose for the idea, interactive diagrams for the parts prose can't carry —
+      steppers, replayable sequences, and loops you can scrub. Zero trackers, zero
+      noise, built to read.
+    </p>
+    <p class="hero__cta">
+      <a href={withBase('/demos')}>See the interactive pieces →</a>
+    </p>
+  </section>
+
+  <section class="container feed" aria-label="All notes">
+    <h2 class="feed__heading">Latest notes</h2>
+    {
+      posts.length === 0 ? (
+        <p class="feed__empty">First note is on its way.</p>
+      ) : (
+        <div class="feed__list">
+          {posts.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: var(--space-9);
+    padding-bottom: var(--space-7);
+    max-width: calc(var(--measure-wide) + 2 * var(--content-pad));
+    display: grid;
+    gap: var(--space-4);
+  }
+  .hero__title {
+    font-size: var(--step-5);
+    max-width: 18ch;
+  }
+  .hero__accent {
+    color: var(--color-accent);
+  }
+  .hero__lede {
+    font-size: var(--step-1);
+    color: var(--color-text);
+    max-width: var(--measure);
+  }
+  .hero__sub {
+    color: var(--color-text-muted);
+    max-width: var(--measure);
+  }
+  .hero__cta {
+    margin-top: var(--space-2);
+    font-size: var(--step-0);
+  }
+
+  .feed {
+    padding-block: var(--space-6) var(--space-8);
+  }
+  .feed__heading {
+    font-size: var(--step-1);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+  }
+  .feed__list {
+    border-bottom: var(--border-thin) solid var(--color-border);
+  }
+  .feed__empty {
+    color: var(--color-text-muted);
+  }
+</style>

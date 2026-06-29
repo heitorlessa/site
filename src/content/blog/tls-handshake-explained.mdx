@@ -1,0 +1,91 @@
+---
+title: The TLS handshake, without the hand-waving
+description: Every HTTPS connection starts with a short, careful negotiation. Here it is as a flow you can replay — and the four ideas that make it click.
+pubDate: 2026-06-22
+tags: ['security', 'networking', 'fundamentals']
+draft: false
+---
+
+import Stepper from '../../components/islands/Stepper.vue';
+import SequencePlayer from '../../components/islands/SequencePlayer.vue';
+import Figure from '../../components/Figure.astro';
+
+When you open an `https://` page, your browser and the server do a quick,
+careful dance *before* any real data moves. It is called the **TLS handshake**.
+It decides who the server is, agrees on how to encrypt the conversation, and
+does both in a fraction of a second.
+
+Most explanations either wave their hands ("it's encrypted, trust me") or drown
+you in cryptography. Let's aim between the two: enough to build a correct mental
+model, nothing you don't need.
+
+## The four ideas
+
+Before the messages, four ideas. Step through them — the handshake is just these
+working together.
+
+<Stepper
+  id="tls-ideas"
+  client:visible
+  label="The four ideas behind the handshake"
+  steps={[
+    { title: 'Identity', body: '<p>The server proves who it is with a <strong>certificate</strong> — a public key signed by an authority your browser already trusts. An impostor can copy the certificate, but not the matching private key.</p>' },
+    { title: 'Agreement', body: '<p>Client and server must agree on a <strong>cipher suite</strong>: which algorithms to use. They pick the strongest set both support — no human picks for them.</p>' },
+    { title: 'A shared secret', body: '<p>Using a key exchange, both sides derive the <em>same</em> secret key — without ever sending it across the wire. An eavesdropper sees the exchange but cannot reconstruct the key.</p>' },
+    { title: 'Switch to fast crypto', body: '<p>Public-key math is slow. Once the shared secret exists, both sides switch to fast <strong>symmetric</strong> encryption for the actual data. The handshake exists to bootstrap that key safely.</p>' },
+  ]}
+/>
+
+Hold those four in mind — **identity, agreement, a shared secret, then speed** —
+and the message flow below stops being mysterious.
+
+## The flow, end to end
+
+Here is a modern (TLS 1.3) handshake as a sequence you can replay. Press play, or
+step through one message at a time. Watch how few round trips it actually takes.
+
+<div class="wide">
+<SequencePlayer
+  client:visible
+  title="A TLS 1.3 handshake"
+  caption="One round trip to a secure channel: the client starts encrypting almost immediately."
+  actors={[
+    { id: 'c', label: 'Browser' },
+    { id: 's', label: 'Server' },
+  ]}
+  messages={[
+    { from: 'c', to: 's', label: 'ClientHello', note: 'Browser proposes TLS versions and cipher suites, and sends its key-exchange share.' },
+    { from: 's', to: 's', label: 'Pick parameters', note: 'Server chooses the strongest cipher suite both sides support.' },
+    { from: 's', to: 'c', label: 'ServerHello', note: 'Server replies with its choice and its own key-exchange share.' },
+    { from: 's', to: 'c', label: 'Certificate + Finished', note: 'Server proves its identity and confirms the keys — now encrypted.' },
+    { from: 'c', to: 'c', label: 'Verify certificate', note: 'Browser checks the certificate chains to a trusted authority and matches the domain.' },
+    { from: 'c', to: 's', label: 'Finished', note: 'Browser confirms it agrees. The secure channel is open.' },
+    { from: 'c', to: 's', label: 'GET / (encrypted)', note: 'The real request finally flows — fully encrypted.' },
+  ]}
+/>
+</div>
+
+Notice the shape: the browser sends its key share in the *very first* message, so
+by the time the server replies, both sides can already compute the shared secret.
+That is why TLS 1.3 needs only **one round trip** — the older TLS 1.2 needed two.
+
+## What this buys you
+
+Three guarantees come out of those few messages:
+
+- **Confidentiality** — only the two endpoints can read the data.
+- **Integrity** — tampering in transit is detected and rejected.
+- **Authentication** — you are talking to the real server, not a look-alike.
+
+> The handshake is not the encryption. It is the careful agreement that *makes*
+> the encryption trustworthy.
+
+## Where it can still go wrong
+
+The math is sound; the edges are human. An expired or misconfigured certificate
+breaks identity. A server stuck on an old protocol weakens agreement. And the
+whole trust model rests on certificate authorities behaving — which is why
+browsers are quick to distrust ones that don't.
+
+Next time you see the padlock, you'll know what it stands for: not magic, but a
+short, deliberate negotiation — identity, agreement, a shared secret, then speed.

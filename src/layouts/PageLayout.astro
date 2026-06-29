@@ -1,0 +1,43 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+// Layout for standalone MDX pages (frontmatter: title, description).
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+  <div class="page container">
+    {frontmatter.eyebrow && <p class="eyebrow">{frontmatter.eyebrow}</p>}
+    <h1 class="page__title">{frontmatter.title}</h1>
+    {frontmatter.description && <p class="page__lede">{frontmatter.description}</p>}
+  </div>
+  <div class="prose page__body">
+    <slot />
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-5);
+    display: grid;
+    gap: var(--space-4);
+    max-width: calc(var(--measure-wide) + 2 * var(--content-pad));
+  }
+  .page__title {
+    font-size: var(--step-4);
+  }
+  .page__lede {
+    font-size: var(--step-1);
+    color: var(--color-text-muted);
+    line-height: var(--leading-snug);
+    max-width: var(--measure);
+  }
+  .page__body {
+    padding-bottom: var(--space-8);
+  }
+  .page__body > :is(figure, astro-island) {
+    display: block;
+    margin-block: var(--space-7);
+  }
+</style>
