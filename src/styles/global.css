@@ -191,6 +191,16 @@ pre {
   grid-column: full;
 }
 
+/* Hydrated islands render as <astro-island> custom elements (created by MDX at
+   runtime, so they never carry a layout's scoped attribute). Make them block so
+   they fill their grid column instead of collapsing to inline width. */
+.prose astro-island {
+  display: block;
+}
+.prose > astro-island {
+  margin-block: var(--space-7);
+}
+
 /* Vertical rhythm inside prose */
 .prose > * + * {
   margin-top: var(--gap);

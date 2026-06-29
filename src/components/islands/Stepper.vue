@@ -256,9 +256,9 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', readHash));
   justify-content: space-between;
   gap: var(--space-3);
 }
-/* No-JS: the prev/next chrome is meaningless when all steps already show. */
+/* No-JS: the counter/dots/nav are meaningless when all steps already show. */
 .stepper:not(.is-interactive) .stepper__nav,
-.stepper:not(.is-interactive) .stepper__dots {
+.stepper:not(.is-interactive) .stepper__bar {
   display: none;
 }
 
