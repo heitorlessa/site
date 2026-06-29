@@ -1,0 +1,108 @@
+---
+// Light/dark toggle. Reflects the current theme, persists the choice, and
+// keeps in sync if the OS preference changes while no explicit choice is set.
+---
+
+<button
+  id="theme-toggle"
+  class="theme-toggle"
+  type="button"
+  aria-label="Switch color theme"
+  title="Switch color theme"
+>
+  <svg class="icon icon--sun" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+    <circle cx="12" cy="12" r="4.2" fill="currentColor"></circle>
+    <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"></path>
+    </g>
+  </svg>
+  <svg class="icon icon--moon" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+    <path
+      d="M20 14.5A8 8 0 1 1 9.5 4a6.3 6.3 0 0 0 10.5 10.5Z"
+      fill="currentColor"
+      stroke="currentColor"
+      stroke-width="1.2"
+      stroke-linejoin="round"></path>
+  </svg>
+  <span class="visually-hidden" id="theme-toggle-state">theme</span>
+</button>
+
+<style>
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background: transparent;
+    color: var(--color-text-muted);
+    border: var(--border-thin) solid var(--color-border);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition:
+      color var(--motion-micro) var(--ease),
+      border-color var(--motion-micro) var(--ease),
+      background-color var(--motion-micro) var(--ease);
+  }
+
+  .theme-toggle:hover {
+    color: var(--color-accent);
+    border-color: var(--color-border-strong);
+    background: var(--color-surface);
+  }
+
+  .icon {
+    grid-area: 1 / 1;
+    width: 1.25rem;
+    height: 1.25rem;
+    transition:
+      opacity var(--motion-micro) var(--ease),
+      transform var(--motion-content) var(--ease);
+  }
+
+  /* Show the icon for the theme you'd switch TO. */
+  :global(:root[data-theme='light']) .icon--moon,
+  :global(:root[data-theme='dark']) .icon--sun {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+  :global(:root[data-theme='light']) .icon--sun,
+  :global(:root[data-theme='dark']) .icon--moon {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.5);
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+  const label = document.getElementById('theme-toggle-state');
+
+  function current(): 'light' | 'dark' {
+    return root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  function announce() {
+    if (label) label.textContent = `${current()} theme active`;
+  }
+
+  btn?.addEventListener('click', () => {
+    const next = current() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch (e) {}
+    announce();
+  });
+
+  // Follow the OS if the reader never made an explicit choice.
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    try {
+      if (localStorage.getItem('theme')) return;
+    } catch (err) {}
+    root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    announce();
+  });
+
+  announce();
+</script>

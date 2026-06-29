@@ -1,0 +1,15 @@
+---
+import { SITE_LANG } from '../consts';
+interface Props {
+  date: Date;
+}
+const { date } = Astro.props;
+const iso = date.toISOString();
+const display = date.toLocaleDateString(SITE_LANG, {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<time datetime={iso}>{display}</time>
