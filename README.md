@@ -198,8 +198,19 @@ src/
 tests/              a11y + interaction (Playwright + axe)
 ```
 
-## Deployment
+## Deployment (GitHub Pages)
 
-Pushing to the deploy branch builds the site and publishes it to **GitHub Pages**
-via `.github/workflows/deploy.yml`. CI (`.github/workflows/ci.yml`) runs the
-accessibility tests and Lighthouse budgets on every push.
+CI (`.github/workflows/ci.yml`) runs build + accessibility tests + Lighthouse
+budgets on every push. The deploy workflow (`.github/workflows/deploy.yml`)
+publishes the site to GitHub Pages.
+
+**One-time setup** (the Actions token can't do this for you): in the repo,
+go to **Settings → Pages → Build and deployment → Source** and choose
+**GitHub Actions**. Then re-run the latest "Deploy to GitHub Pages" workflow
+(or push again). After that, every push to the deploy branch publishes
+automatically at `https://heitorlessa.github.io/site/`.
+
+> GitHub Pages on a **private** repo requires a paid plan (Pro/Team/Enterprise).
+> On a free plan, either make the repo public or deploy the static `dist/` folder
+> to any static host (Netlify, Cloudflare Pages, etc.) — set `SITE_URL`/`SITE_BASE`
+> to match the host (`SITE_BASE=/` for a root domain).
