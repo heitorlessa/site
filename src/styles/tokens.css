@@ -93,26 +93,26 @@
 :root[data-theme='light'] {
   color-scheme: light;
 
-  --color-bg: #e7e8e4; /* cool-neutral stone paper                */
-  --color-surface: #f1f2ee; /* raised cards, slightly lighter     */
-  --color-surface-2: #dcddd7; /* sunk wells / code                */
-  --color-paper: #f6f6f3; /* always-light card for diagrams       */
+  --color-bg: #f3f4f1; /* bright near-white paper, faint cool tint */
+  --color-surface: #fafbf8; /* raised cards, near-white           */
+  --color-surface-2: #e7e8e3; /* sunk wells / code                */
+  --color-paper: #fbfbf9; /* always-light card for diagrams       */
 
-  --color-text: #21221f; /* ~13:1 on bg — AAA                     */
-  --color-text-muted: #53554e; /* ~6.1:1 — AA, for meta           */
-  --color-text-subtle: #5c5e55; /* ~5.3:1 — AA, smallest text     */
+  --color-text: #21221f; /* ~14.5:1 on bg — AAA                   */
+  --color-text-muted: #53554e; /* ~6.9:1 — AA, for meta           */
+  --color-text-subtle: #5c5e55; /* ~6:1 — AA, smallest text       */
 
-  --color-border: #d0d2ca;
-  --color-border-strong: #b9bbb1;
+  --color-border: #dadbd3;
+  --color-border-strong: #c2c4ba;
 
-  --color-accent: #a13d10; /* terracotta link text — ~5.4:1 AA    */
+  --color-accent: #a13d10; /* terracotta link text — ~6:1 AA      */
   --color-accent-hover: #82300a;
   --color-accent-solid: #c2410c; /* fills / accent surfaces        */
   --color-accent-contrast: #fbfbf9; /* text on accent-solid        */
-  --color-accent-wash: #ecdfd5; /* warm tint over the cool ground  */
+  --color-accent-wash: #f1e3d8; /* warm tint over the cool ground  */
 
   --color-focus: #1d4ed8; /* high-contrast focus ring (blue)      */
-  --color-selection: #f1d9c8;
+  --color-selection: #f3dac9;
 
   --shadow-sm: 0 1px 2px rgba(20, 22, 18, 0.06);
   --shadow-md: 0 2px 10px rgba(20, 22, 18, 0.08), 0 1px 3px rgba(20, 22, 18, 0.06);
