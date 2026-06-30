@@ -66,9 +66,11 @@ h1,
 h2,
 h3,
 h4 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto; /* Fraunces opsz axis follows the size */
   line-height: var(--leading-tight);
-  font-weight: var(--weight-bold);
-  letter-spacing: var(--tracking-tight);
+  font-weight: 600;
+  letter-spacing: -0.006em;
   text-wrap: balance; /* avoid orphan words in headings */
 }
 
@@ -283,6 +285,38 @@ svg[id^='mermaid'] {
   border-radius: var(--radius-md);
   padding: var(--space-5);
   box-shadow: var(--shadow-sm);
+}
+
+/* Refine Mermaid's inline SVG to match the hand-built islands: rounded "chip"
+   nodes, consistent 1.5px strokes, calm edges. themeVariables set the palette;
+   these tighten the geometry the theme can't express. */
+svg[id^='mermaid'] {
+  --chip-radius: 9px;
+}
+svg[id^='mermaid'] .node rect,
+svg[id^='mermaid'] .node polygon,
+svg[id^='mermaid'] .node circle,
+svg[id^='mermaid'] .node path,
+svg[id^='mermaid'] .cluster rect {
+  rx: var(--chip-radius);
+  ry: var(--chip-radius);
+  stroke-width: 1.5px;
+}
+svg[id^='mermaid'] .edgePath .path,
+svg[id^='mermaid'] .flowchart-link {
+  stroke-width: 1.6px;
+}
+svg[id^='mermaid'] .nodeLabel,
+svg[id^='mermaid'] .edgeLabel {
+  font-weight: 400;
+}
+svg[id^='mermaid'] .edgeLabel {
+  border-radius: var(--radius-sm);
+}
+/* Tighten label chips and arrowheads to the muted edge color. */
+svg[id^='mermaid'] marker path {
+  fill: #6b6357;
+  stroke: #6b6357;
 }
 
 /* =========================================================================

@@ -3,6 +3,8 @@ import { SITE_TITLE, SITE_DESCRIPTION, SITE_AUTHOR, SITE_LANG, withBase } from '
 import '@fontsource/atkinson-hyperlegible/400.css';
 import '@fontsource/atkinson-hyperlegible/700.css';
 import '@fontsource/atkinson-hyperlegible/400-italic.css';
+// Signature display face (variable: optical-size + weight axes), headings only.
+import '@fontsource-variable/fraunces/opsz.css';
 
 interface Props {
   title?: string;
@@ -44,8 +46,8 @@ const ogImage = image ? new URL(image, Astro.site).href : undefined;
 <meta name="description" content={description} />
 <meta name="author" content={SITE_AUTHOR} />
 <meta name="color-scheme" content="light dark" />
-<meta name="theme-color" content="#f4efe6" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#181613" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#e7e8e4" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#17181a" media="(prefers-color-scheme: dark)" />
 
 <!-- Open Graph -->
 <meta property="og:type" content={type} />
