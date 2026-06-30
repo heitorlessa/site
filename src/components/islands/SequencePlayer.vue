@@ -89,6 +89,7 @@ function dir(m: Message): 1 | -1 {
     <div class="seq__frame" role="group" :aria-label="title ?? 'Sequence diagram'">
       <p v-if="title" class="seq__title">{{ title }}</p>
 
+      <div class="seq__scroll">
       <svg
         class="seq__canvas"
         :viewBox="`0 0 ${W} ${height}`"
@@ -168,6 +169,7 @@ function dir(m: Message): 1 | -1 {
           </g>
         </g>
       </svg>
+      </div>
 
       <p class="seq__caption" aria-live="polite">
         <span class="seq__step-badge">{{ ph.index.value + 1 }}/{{ count }}</span>
@@ -228,10 +230,21 @@ function dir(m: Message): 1 | -1 {
   letter-spacing: var(--tracking-tight);
 }
 
+.seq__scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
 .seq__canvas {
   width: 100%;
   height: auto;
   overflow: visible;
+}
+/* On a phone, don't shrink labels into illegibility — keep a legible minimum
+   width and let the diagram scroll horizontally instead. */
+@media (max-width: 40rem) {
+  .seq__canvas {
+    min-width: 32rem;
+  }
 }
 
 .seq__lifeline {
@@ -247,7 +260,7 @@ function dir(m: Message): 1 | -1 {
 }
 .seq__actor-label {
   fill: var(--color-text);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   text-anchor: middle;
   dominant-baseline: middle;
@@ -264,7 +277,7 @@ function dir(m: Message): 1 | -1 {
 }
 .seq__msg-label {
   fill: var(--color-text-muted);
-  font-size: 13px;
+  font-size: 14px;
   font-family: var(--font-body);
 }
 

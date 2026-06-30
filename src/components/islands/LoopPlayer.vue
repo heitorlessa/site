@@ -48,7 +48,6 @@ function arcPath(i: number): string {
 }
 
 const activeFrame = computed(() => props.frames[ph.index.value]);
-const liveCaption = computed(() => activeFrame.value?.caption ?? activeFrame.value?.label ?? '');
 const valueText = computed(
   () => `Phase ${ph.index.value + 1} of ${count.value}: ${activeFrame.value?.label ?? ''}`,
 );
@@ -110,8 +109,9 @@ const valueText = computed(
       </div>
 
       <p class="loop__caption" aria-live="polite">
-        <span class="loop__badge">{{ activeFrame?.label }}</span>
-        {{ liveCaption }}
+        <span class="loop__badge">{{ ph.index.value + 1 }}/{{ count }}</span>
+        <span><strong>{{ activeFrame?.label }}</strong><template v-if="activeFrame?.caption">
+          — {{ activeFrame.caption }}</template></span>
       </p>
     </div>
 

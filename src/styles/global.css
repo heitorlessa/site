@@ -29,7 +29,6 @@ body {
   font-size: var(--step-0);
   line-height: var(--leading-body);
   font-weight: var(--weight-normal);
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Subtle warmth so dark mode never reads as pure-black void. */
@@ -168,9 +167,13 @@ pre {
 }
 
 /* Reading column: a centered measure with optional full-width "break-out"
-   children (figures, islands) via the named grid columns. */
+   children (figures, islands) via the named grid columns. Capped and centered
+   so the header (placed inside this grid) and the body share one left spine,
+   and so full-bleed children don't sprawl on ultrawide screens. */
 .prose {
   --gap: var(--space-5);
+  max-width: 72rem;
+  margin-inline: auto;
   display: grid;
   grid-template-columns:
     [full-start] minmax(var(--content-pad), 1fr)
@@ -199,7 +202,7 @@ pre {
 .prose astro-island {
   display: block;
 }
-.prose > astro-island {
+.prose > :is(astro-island, figure) {
   margin-block: var(--space-7);
 }
 
@@ -276,30 +279,27 @@ svg[id^='mermaid'] {
   max-width: 100%;
 }
 
-/* Bare ```mermaid fences land as a direct prose child → give them the card.
-   When wrapped in <Figure variant="diagram">, the frame carries the card. */
+/* The diagram card uses the SAME surface + radius as the island cards, so a
+   build-time diagram and a hand-built island read as one family in both themes.
+   Bare ```mermaid fences land as a direct prose child; <Figure variant="diagram">
+   wraps the frame. */
 .prose > svg[id^='mermaid'],
 .diagram__frame {
-  background: var(--color-paper);
+  background: var(--color-surface);
   border: var(--border-thin) solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--space-5);
   box-shadow: var(--shadow-sm);
 }
 
-/* Refine Mermaid's inline SVG to match the hand-built islands: rounded "chip"
-   nodes, consistent 1.5px strokes, calm edges. themeVariables set the palette;
-   these tighten the geometry the theme can't express. */
-svg[id^='mermaid'] {
-  --chip-radius: 9px;
-}
+/* Chip geometry to match the islands: rounded nodes, consistent strokes. */
 svg[id^='mermaid'] .node rect,
 svg[id^='mermaid'] .node polygon,
 svg[id^='mermaid'] .node circle,
 svg[id^='mermaid'] .node path,
 svg[id^='mermaid'] .cluster rect {
-  rx: var(--chip-radius);
-  ry: var(--chip-radius);
+  rx: 10px;
+  ry: 10px;
   stroke-width: 1.5px;
 }
 svg[id^='mermaid'] .edgePath .path,
@@ -310,13 +310,65 @@ svg[id^='mermaid'] .nodeLabel,
 svg[id^='mermaid'] .edgeLabel {
   font-weight: 400;
 }
-svg[id^='mermaid'] .edgeLabel {
-  border-radius: var(--radius-sm);
+
+/* Dark mode: the SVG is colour-baked for light at build time, so recolour it to
+   the dark island palette. Mermaid injects an #id-scoped <style>, so these need
+   !important to win. Wrapped in a mixin-style block applied for the explicit
+   theme AND the no-JS OS default. */
+:root[data-theme='dark'] svg[id^='mermaid'] :is(.node rect, .node polygon, .node circle, .node ellipse, .node path) {
+  fill: var(--color-accent-wash) !important;
+  stroke: var(--color-accent) !important;
 }
-/* Tighten label chips and arrowheads to the muted edge color. */
-svg[id^='mermaid'] marker path {
-  fill: #6b6357;
-  stroke: #6b6357;
+:root[data-theme='dark'] svg[id^='mermaid'] :is(.nodeLabel, .label, span, p, foreignObject div) {
+  color: var(--color-text) !important;
+  fill: var(--color-text) !important;
+}
+:root[data-theme='dark'] svg[id^='mermaid'] :is(.edgeLabel, .edgeLabel p, .edgeLabel rect) {
+  background-color: var(--color-surface) !important;
+  fill: var(--color-surface) !important;
+}
+:root[data-theme='dark'] svg[id^='mermaid'] :is(.marker, .arrowheadPath) {
+  fill: var(--color-text-muted) !important;
+  stroke: var(--color-text-muted) !important;
+}
+:root[data-theme='dark'] svg[id^='mermaid'] :is(.flowchart-link, .edgePath .path) {
+  stroke: var(--color-text-muted) !important;
+  fill: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) svg[id^='mermaid'] :is(.node rect, .node polygon, .node circle, .node ellipse, .node path) {
+    fill: var(--color-accent-wash) !important;
+    stroke: var(--color-accent) !important;
+  }
+  :root:not([data-theme]) svg[id^='mermaid'] :is(.nodeLabel, .label, span, p, foreignObject div) {
+    color: var(--color-text) !important;
+    fill: var(--color-text) !important;
+  }
+  :root:not([data-theme]) svg[id^='mermaid'] :is(.edgeLabel, .edgeLabel p, .edgeLabel rect) {
+    background-color: var(--color-surface) !important;
+    fill: var(--color-surface) !important;
+  }
+  :root:not([data-theme]) svg[id^='mermaid'] :is(.marker, .arrowheadPath) {
+    fill: var(--color-text-muted) !important;
+    stroke: var(--color-text-muted) !important;
+  }
+  :root:not([data-theme]) svg[id^='mermaid'] :is(.flowchart-link, .edgePath .path) {
+    stroke: var(--color-text-muted) !important;
+    fill: none !important;
+  }
+}
+
+/* Narrow screens: let a wide diagram scroll horizontally at a legible minimum
+   width instead of shrinking its labels into illegibility. */
+@media (max-width: 40rem) {
+  .diagram__frame {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+  .diagram__frame svg[id^='mermaid'] {
+    min-width: 30rem;
+  }
 }
 
 /* =========================================================================

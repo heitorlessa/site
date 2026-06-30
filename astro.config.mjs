@@ -37,23 +37,26 @@ export default defineConfig({
           // Diagrams always render on the light "paper" card (both themes), so
           // these are tuned to that card and mirror the hand-built islands:
           // Atkinson type, terracotta-bordered "chip" nodes, muted edges.
+          // Palette mirrors the hand-built islands' LIGHT tokens exactly, so the
+          // two diagram families read as siblings. Dark mode is recolored in CSS
+          // (global.css) since these are baked at build time.
           mermaidConfig: {
             theme: 'base',
             fontFamily: "'Atkinson Hyperlegible', system-ui, sans-serif",
             themeVariables: {
               fontFamily: "'Atkinson Hyperlegible', system-ui, sans-serif",
-              fontSize: '15px',
-              primaryColor: '#f0e6dc',
-              primaryBorderColor: '#c2410c',
-              primaryTextColor: '#21221f',
-              secondaryColor: '#e6e3db',
-              tertiaryColor: '#fbfbf9',
-              lineColor: '#6b6357',
+              fontSize: '16px',
+              primaryColor: '#f1e3d8', // = --color-accent-wash (node fill)
+              primaryBorderColor: '#a13d10', // = --color-accent (matches actor box)
+              nodeBorder: '#a13d10',
+              primaryTextColor: '#21221f', // = --color-text
               textColor: '#21221f',
-              clusterBkg: '#f1efe9',
-              clusterBorder: '#c2c4ba',
-              edgeLabelBackground: '#fbfbf9',
-              nodeBorder: '#c2410c',
+              lineColor: '#46473f', // = --color-text-muted (edges)
+              secondaryColor: '#e7e8e3', // = --color-surface-2
+              tertiaryColor: '#fafbf8', // = --color-surface
+              clusterBkg: '#e7e8e3',
+              clusterBorder: '#c2c4ba', // = --color-border-strong
+              edgeLabelBackground: '#fafbf8', // = --color-surface (the card)
             },
           },
           // Allow pinning to a pre-installed Chromium (e.g. a sandbox image

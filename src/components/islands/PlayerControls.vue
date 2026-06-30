@@ -174,11 +174,55 @@ function onScrub(event: Event) {
   align-items: center;
 }
 
+/* Explicit track + thumb so the scrubber reads as present (and identical) in
+   every player, not just when the browser happens to draw a default rail. */
 input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
-  accent-color: var(--color-accent-solid);
-  cursor: pointer;
   height: 1.5rem;
+  background: transparent;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-2);
+  border: var(--border-thin) solid var(--color-border);
+}
+input[type='range']::-moz-range-track {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-2);
+  border: var(--border-thin) solid var(--color-border);
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-solid);
+  border: 2px solid var(--color-surface);
+}
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-solid);
+  border: 2px solid var(--color-surface);
+}
+input[type='range']:focus-visible {
+  outline: none;
+}
+input[type='range']:focus-visible::-webkit-slider-thumb {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+input[type='range']:focus-visible::-moz-range-thumb {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .controls__rm {

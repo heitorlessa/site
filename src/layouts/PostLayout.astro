@@ -18,11 +18,11 @@ const { title, description, pubDate, updated, tags } = post.data;
   publishedTime={pubDate}
   modifiedTime={updated}
 >
-  <article class="post">
-    <header class="post__header container">
+  <article class="post prose">
+    <header class="post__header">
       {
         tags.length > 0 && (
-          <p class="post__tags eyebrow">
+          <p class="post__tags">
             {tags.map((t) => (
               <span>#{t}</span>
             ))}
@@ -42,25 +42,30 @@ const { title, description, pubDate, updated, tags } = post.data;
       </div>
     </header>
 
-    <div class="post__body prose">
-      <slot />
-    </div>
+    <slot />
   </article>
 </BaseLayout>
 
 <style>
-  .post__header {
+  .post {
     padding-top: var(--space-8);
-    padding-bottom: var(--space-6);
-    display: grid;
-    gap: var(--space-4);
-    max-width: calc(var(--measure-wide) + 2 * var(--content-pad));
+    padding-bottom: var(--space-8);
   }
 
+  .post__header {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+  }
+
+  /* Metadata, not links — terracotta is reserved for real interactivity. */
   .post__tags {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
+    font-size: var(--step--1);
+    color: var(--color-text-subtle);
+    letter-spacing: 0.01em;
   }
 
   .post__title {
@@ -69,9 +74,8 @@ const { title, description, pubDate, updated, tags } = post.data;
 
   .post__desc {
     font-size: var(--step-1);
-    color: var(--color-text-muted);
+    color: var(--color-text); /* full contrast; ledes are consistent site-wide */
     line-height: var(--leading-snug);
-    max-width: var(--measure);
   }
 
   .post__meta {
@@ -80,15 +84,5 @@ const { title, description, pubDate, updated, tags } = post.data;
     gap: var(--space-2);
     color: var(--color-text-subtle);
     font-size: var(--step--1);
-  }
-
-  .post__body {
-    padding-bottom: var(--space-8);
-  }
-
-  /* Islands (rendered as <astro-island>) and figures get breathing room. */
-  .post__body > :is(figure, astro-island) {
-    display: block;
-    margin-block: var(--space-7);
   }
 </style>

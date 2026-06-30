@@ -56,9 +56,12 @@
   /* ----------------------------------------------------------------------
      MEASURE — line length caps. Body text never goes full-bleed.
      ---------------------------------------------------------------------- */
-  --measure: 65ch; /* ideal prose width   */
-  --measure-wide: 78ch; /* lead / wide media */
-  --measure-narrow: 54ch;
+  /* Measure is in `ch` of the body font. Atkinson's glyphs are wide, so a
+     given ch count renders ~1.35× that many visible characters; 50ch lands the
+     body around a comfortable ~66–70 characters per line. */
+  --measure: 50ch; /* ideal prose width (~68 CPL) */
+  --measure-wide: 64ch; /* lead / wide media         */
+  --measure-narrow: 42ch;
 
   /* ----------------------------------------------------------------------
      RADII / BORDERS / SHADOWS — restrained. Chrome must earn its place.
