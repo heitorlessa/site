@@ -99,7 +99,7 @@
   --color-paper: #fbfbf9; /* always-light card for diagrams       */
 
   --color-text: #21221f; /* ~14.5:1 on bg — AAA                   */
-  --color-text-muted: #53554e; /* ~6.9:1 — AA, for meta           */
+  --color-text-muted: #46473f; /* ~8.5:1 — AAA, secondary text    */
   --color-text-subtle: #5c5e55; /* ~6:1 — AA, smallest text       */
 
   --color-border: #dadbd3;

@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
-import { SITE_DESCRIPTION, withBase } from '../consts';
+import { withBase } from '../consts';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -11,15 +11,13 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 
 <BaseLayout>
   <section class="hero container">
-    <p class="eyebrow">Notes by Lessa</p>
     <h1 class="hero__title">
       Mental models, made to <span class="hero__accent">click</span>.
     </h1>
-    <p class="hero__lede">{SITE_DESCRIPTION}</p>
-    <p class="hero__sub">
-      Prose for the idea, interactive diagrams for the parts prose can't carry —
-      steppers, replayable sequences, and loops you can scrub. Zero trackers, zero
-      noise, built to read.
+    <p class="hero__lede">
+      Calm, distraction-free notes on building software — with interactive
+      diagrams that make the ideas stick. Steppers, replayable sequences, and
+      loops you can scrub. Zero trackers, zero noise.
     </p>
     <p class="hero__cta">
       <a href={withBase('/demos')}>See the interactive pieces →</a>
@@ -60,10 +58,6 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   .hero__lede {
     font-size: var(--step-1);
     color: var(--color-text);
-    max-width: var(--measure);
-  }
-  .hero__sub {
-    color: var(--color-text-muted);
     max-width: var(--measure);
   }
   .hero__cta {

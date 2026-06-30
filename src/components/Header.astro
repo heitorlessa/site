@@ -116,12 +116,34 @@ function isCurrent(href: string): boolean {
     background: var(--color-accent-wash);
   }
 
-  @media (max-width: 30rem) {
-    .brand__name {
-      font-size: var(--step--1);
+  .brand__name {
+    white-space: nowrap;
+  }
+
+  /* Narrow screens: keep the wordmark on one line; drop the nav to its own
+     full-width row beneath the brand + toggle so nothing crowds or wraps. */
+  @media (max-width: 34rem) {
+    .site-header__inner {
+      flex-wrap: wrap;
+      row-gap: var(--space-2);
+      padding-block: var(--space-3);
+      min-height: 0;
+    }
+    /* Brand eats the free space, pushing the toggle to the right on row 1. */
+    .brand {
+      margin-right: auto;
+    }
+    .site-nav {
+      order: 3;
+      flex-basis: 100%;
+      margin-left: 0;
+    }
+    .site-nav ul {
+      justify-content: flex-start;
+      gap: var(--space-1);
     }
     .site-nav a {
-      padding-inline: var(--space-2);
+      padding-inline: var(--space-3);
     }
   }
 </style>
