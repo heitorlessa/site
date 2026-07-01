@@ -1,0 +1,23 @@
+---
+import { getCollection, render } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+// Rough reading time from the raw body (≈200 wpm), no extra deps.
+const words = (post.body ?? '').split(/\s+/).filter(Boolean).length;
+const minutesRead = Math.max(1, Math.round(words / 200));
+---
+
+<PostLayout post={post} minutesRead={minutesRead}>
+  <Content />
+</PostLayout>

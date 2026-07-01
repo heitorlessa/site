@@ -1,0 +1,190 @@
+/*
+  Design tokens — one place, semantic names, documented rationale.
+  Tuned for long-form READING (generous, airy), not a dense dashboard.
+
+  Layers:
+    1. Primitive scales (raw values: palette ramps, type steps, space grid).
+    2. Semantic tokens (what a thing MEANS: --color-text, --space-gutter…).
+  Components only ever reference semantic tokens.
+*/
+
+:root {
+  /* ----------------------------------------------------------------------
+     TYPE SCALE — modular, ratio 1.2 (minor third). Fluid via clamp() so it
+     breathes between a 360px phone and a ~1100px reading column without
+     media queries. Body is the anchor at ~20px (1.25rem) per WCAG comfort.
+     ---------------------------------------------------------------------- */
+  --step--1: clamp(0.94rem, 0.90rem + 0.18vw, 1.04rem); /* small print / meta */
+  --step-0: clamp(1.13rem, 1.06rem + 0.34vw, 1.25rem); /*  BODY  ~18–20px   */
+  --step-1: clamp(1.35rem, 1.24rem + 0.55vw, 1.56rem); /* lead / h4         */
+  --step-2: clamp(1.62rem, 1.45rem + 0.85vw, 1.95rem); /* h3                */
+  --step-3: clamp(1.94rem, 1.69rem + 1.27vw, 2.44rem); /* h2                */
+  --step-4: clamp(2.33rem, 1.95rem + 1.90vw, 3.05rem); /* h1                */
+  --step-5: clamp(2.80rem, 2.24rem + 2.80vw, 3.82rem); /* display / hero    */
+
+  --leading-tight: 1.2; /* headings        */
+  --leading-snug: 1.35; /* sub-heads, UI   */
+  --leading-body: 1.65; /* prose comfort   */
+
+  --tracking-tight: -0.012em; /* large headings read tighter */
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em; /* eyebrows / small caps */
+
+  --font-body: 'Atkinson Hyperlegible', ui-sans-serif, system-ui, sans-serif;
+  /* Signature display face — Fraunces, a characterful "old-style" soft serif
+     (optical-size axis), for headings and the wordmark only. Body stays in the
+     low-vision-optimized Atkinson. */
+  --font-display: 'Fraunces Variable', 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', monospace;
+  --weight-normal: 400;
+  --weight-bold: 700;
+
+  /* ----------------------------------------------------------------------
+     SPACING — strict 4px base grid. Use the named ramp; never ad-hoc px.
+     ---------------------------------------------------------------------- */
+  --space-1: 0.25rem; /*  4px */
+  --space-2: 0.5rem; /*   8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /*    16px */
+  --space-5: 1.5rem; /*  24px */
+  --space-6: 2rem; /*    32px */
+  --space-7: 3rem; /*    48px */
+  --space-8: 4rem; /*    64px */
+  --space-9: 6rem; /*    96px */
+  --space-10: 8rem; /*  128px */
+
+  /* ----------------------------------------------------------------------
+     MEASURE — line length caps. Body text never goes full-bleed.
+     ---------------------------------------------------------------------- */
+  /* Measure is in `ch` of the body font. Atkinson's glyphs are wide, so a
+     given ch count renders ~1.35× that many visible characters; 52ch lands the
+     body around a comfortable ~70 characters per line. Media (code, diagrams,
+     islands) breaks out to the wider tracks so it isn't squeezed on big screens
+     while the reading line stays comfortable. */
+  --measure: 52ch; /* reading line (~70 CPL)          */
+  --measure-wide: 74ch; /* code + diagrams break-out (~960px) */
+  --measure-narrow: 44ch;
+
+  /* ----------------------------------------------------------------------
+     RADII / BORDERS / SHADOWS — restrained. Chrome must earn its place.
+     ---------------------------------------------------------------------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+  --border-thin: 1px;
+
+  /* ----------------------------------------------------------------------
+     MOTION — 150ms micro-interactions, 200–300ms content transitions.
+     A single easing for a calm, consistent feel.
+     ---------------------------------------------------------------------- */
+  --motion-micro: 150ms;
+  --motion-content: 260ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Layout rhythm */
+  --content-pad: clamp(1rem, 4vw, 2rem);
+  --z-skiplink: 100;
+  --z-header: 50;
+}
+
+/* ========================================================================
+   COLOR — LIGHT (default). A cool-neutral "stone" paper — deliberately NOT
+   cream — so the warm terracotta accent reads as a deliberate pop rather than
+   a tonal match. Not glaring white, easy on tired eyes. Body text targets
+   WCAG AAA (≥7:1); links target AA (≥4.5:1) and darken on hover.
+   ======================================================================== */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --color-bg: #f3f4f1; /* bright near-white paper, faint cool tint */
+  --color-surface: #fafbf8; /* raised cards, near-white           */
+  --color-surface-2: #e7e8e3; /* sunk wells / code                */
+  --color-paper: #fbfbf9; /* always-light card for diagrams       */
+
+  --color-text: #21221f; /* ~14.5:1 on bg — AAA                   */
+  --color-text-muted: #46473f; /* ~8.5:1 — AAA, secondary text    */
+  --color-text-subtle: #5c5e55; /* ~6:1 — AA, smallest text       */
+
+  --color-border: #dadbd3;
+  --color-border-strong: #c2c4ba;
+
+  --color-accent: #a13d10; /* terracotta link text — ~6:1 AA      */
+  --color-accent-hover: #82300a;
+  --color-accent-solid: #c2410c; /* fills / accent surfaces        */
+  --color-accent-contrast: #fbfbf9; /* text on accent-solid        */
+  --color-accent-wash: #f1e3d8; /* warm tint over the cool ground  */
+
+  --color-focus: #1d4ed8; /* high-contrast focus ring (blue)      */
+  --color-selection: #f3dac9;
+
+  --shadow-sm: 0 1px 2px rgba(20, 22, 18, 0.06);
+  --shadow-md: 0 2px 10px rgba(20, 22, 18, 0.08), 0 1px 3px rgba(20, 22, 18, 0.06);
+}
+
+/* ========================================================================
+   COLOR — DARK. A cool charcoal (not pure #000), soft off-white text. Warm
+   terracotta accent pops against the cool ground.
+   ======================================================================== */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: #262320; /* soft, warm charcoal — lifted, not near-black */
+  --color-surface: #322e2a;
+  --color-surface-2: #3d3833;
+  --color-paper: #f1f1ee; /* (unused) */
+
+  --color-text: #ece7dd; /* ~12.7:1 on bg — AAA, warm off-white   */
+  --color-text-muted: #bcb3a4; /* ~7.5:1 — AAA                    */
+  --color-text-subtle: #aba190; /* ~5.6:1 — AA                    */
+
+  --color-border: #423c35;
+  --color-border-strong: #554e45;
+
+  --color-accent: #f4a261; /* terracotta-light, ~7.6:1 on bg — AAA */
+  --color-accent-hover: #f7b787;
+  --color-accent-solid: #e0764a;
+  --color-accent-contrast: #1a140f;
+  --color-accent-wash: #352a22;
+
+  --color-focus: #93b4ff;
+  --color-selection: #4a3a2c;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.34);
+  --shadow-md: 0 2px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.34);
+}
+
+/* Honor prefers-color-scheme when the reader hasn't chosen explicitly.
+   The inline head script sets data-theme; this is the no-JS safety net. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --color-bg: #262320;
+    --color-surface: #322e2a;
+    --color-surface-2: #3d3833;
+    --color-paper: #f1f1ee;
+    --color-text: #ece7dd;
+    --color-text-muted: #bcb3a4;
+    --color-text-subtle: #aba190;
+    --color-border: #423c35;
+    --color-border-strong: #554e45;
+    --color-accent: #f4a261;
+    --color-accent-hover: #f7b787;
+    --color-accent-solid: #e0764a;
+    --color-accent-contrast: #1a140f;
+    --color-accent-wash: #352a22;
+    --color-focus: #93b4ff;
+    --color-selection: #4a3a2c;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.34);
+    --shadow-md: 0 2px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.34);
+  }
+}
+
+/* prefers-contrast: cheap wins — firmer borders & text. */
+@media (prefers-contrast: more) {
+  :root {
+    --color-text-muted: var(--color-text);
+    --color-border: var(--color-border-strong);
+  }
+}

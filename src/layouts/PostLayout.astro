@@ -1,0 +1,88 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  minutesRead?: number;
+}
+const { post, minutesRead } = Astro.props;
+const { title, description, pubDate, updated, tags } = post.data;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedTime={pubDate}
+  modifiedTime={updated}
+>
+  <article class="post prose">
+    <header class="post__header">
+      {
+        tags.length > 0 && (
+          <p class="post__tags">
+            {tags.map((t) => (
+              <span>#{t}</span>
+            ))}
+          </p>
+        )
+      }
+      <h1 class="post__title">{title}</h1>
+      <p class="post__desc">{description}</p>
+      <div class="post__meta">
+        <FormattedDate date={pubDate} />
+        {
+          updated && (
+            <span>· Updated <FormattedDate date={updated} /></span>
+          )
+        }
+        {minutesRead && <span>· {minutesRead} min read</span>}
+      </div>
+    </header>
+
+    <slot />
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-8);
+  }
+
+  .post__header {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+  }
+
+  /* Metadata, not links — terracotta is reserved for real interactivity. */
+  .post__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: var(--step--1);
+    color: var(--color-text-subtle);
+    letter-spacing: 0.01em;
+  }
+
+  .post__title {
+    font-size: var(--step-5);
+  }
+
+  .post__desc {
+    font-size: var(--step-1);
+    color: var(--color-text); /* full contrast; ledes are consistent site-wide */
+    line-height: var(--leading-snug);
+  }
+
+  .post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    color: var(--color-text-subtle);
+    font-size: var(--step--1);
+  }
+</style>

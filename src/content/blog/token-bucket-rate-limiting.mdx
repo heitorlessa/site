@@ -1,0 +1,116 @@
+---
+title: Rate limiting with a token bucket
+description: The token bucket is the rate limiter worth knowing by heart. It allows short bursts, enforces a steady average, and fits in a few lines of code.
+pubDate: 2026-06-26
+tags: ['systems', 'api', 'fundamentals']
+draft: false
+---
+
+import LoopPlayer from '../../components/islands/LoopPlayer.vue';
+import SequencePlayer from '../../components/islands/SequencePlayer.vue';
+
+Every public API needs a way to say "slow down." The **token bucket** is the
+classic answer: simple to build, cheap to run, and it behaves the way people
+actually want — a little burst is fine, but the long-run average is capped.
+
+Here's the whole idea in one sentence: **you need a token to act, tokens refill
+at a steady rate, and the bucket only holds so many.**
+
+## The refill loop
+
+The bucket refills on a clock, independent of traffic. Watch the cycle: tokens
+drip in, requests spend them, and when the bucket is empty, requests wait.
+
+<LoopPlayer
+  client:visible
+  title="A token bucket over time"
+  caption="Tokens accrue at a fixed rate; the cap is what limits a burst."
+  frames={[
+    { label: 'Refill', caption: 'Tokens are added at a fixed rate — say 10 per second — up to the bucket capacity.' },
+    { label: 'Spend', caption: 'Each request removes one token. Plenty in the bucket? It passes instantly.' },
+    { label: 'Empty', caption: 'The bucket hits zero. Further requests are rejected or queued until the next refill.' },
+    { label: 'Recover', caption: 'The steady drip refills the bucket, and normal service resumes.' },
+  ]}
+/>
+
+Two numbers define the policy:
+
+- **Rate** — how fast tokens refill (the sustained request rate you allow).
+- **Capacity** — how many tokens the bucket holds (the size of a burst you tolerate).
+
+A big capacity forgives spikes; a small one keeps traffic smooth. Rate sets the
+long-run average no matter what.
+
+## What a client sees
+
+When the bucket runs dry, a good API doesn't just fail — it tells the client
+*when* to try again. Step through a client that hits the limit and backs off.
+
+<div class="wide">
+<SequencePlayer
+  client:visible
+  title="Hitting the limit, then backing off"
+  caption="A 429 with Retry-After turns a failure into a scheduled retry."
+  actors={[
+    { id: 'c', label: 'Client' },
+    { id: 'g', label: 'Gateway' },
+  ]}
+  messages={[
+    { from: 'c', to: 'g', label: 'Request #1', note: 'Bucket has tokens — spend one, allow it.' },
+    { from: 'g', to: 'c', label: '200 OK', note: 'Served normally.' },
+    { from: 'c', to: 'g', label: 'Burst of requests', note: 'The burst drains the bucket to zero.' },
+    { from: 'g', to: 'c', label: '429 Too Many Requests', note: 'No tokens left. The gateway adds a Retry-After header.' },
+    { from: 'c', to: 'c', label: 'Wait Retry-After', note: 'A well-behaved client waits instead of hammering.' },
+    { from: 'c', to: 'g', label: 'Retry', note: 'Tokens have refilled — the request now succeeds.' },
+    { from: 'g', to: 'c', label: '200 OK', note: 'Back to normal.' },
+  ]}
+/>
+</div>
+
+## In code
+
+The elegant part: you don't need a background timer. Compute the refill lazily
+from elapsed time whenever a request arrives.
+
+```ts
+class TokenBucket {
+  private tokens: number;
+  private last = Date.now();
+
+  constructor(
+    private capacity: number,
+    private ratePerSec: number,
+  ) {
+    this.tokens = capacity;
+  }
+
+  tryRemove(cost = 1): boolean {
+    const now = Date.now();
+    // Refill based on how much time has passed — no timer needed.
+    this.tokens = Math.min(
+      this.capacity,
+      this.tokens + ((now - this.last) / 1000) * this.ratePerSec,
+    );
+    this.last = now;
+
+    if (this.tokens >= cost) {
+      this.tokens -= cost;
+      return true; // allowed
+    }
+    return false; // rate limited → return 429
+  }
+}
+```
+
+That "refill from elapsed time" trick is why the token bucket scales: state is
+two numbers per client, and there are no timers to manage.
+
+## Why not just count requests per minute?
+
+A fixed window ("100 requests per minute") has an ugly edge: a client can send
+100 at 11:00:59 and 100 more at 11:01:00 — 200 requests in one second, all
+"within limits." The token bucket has no such seam. It smooths naturally,
+because refill is continuous, not stepped.
+
+Reach for the token bucket first. It's the rate limiter that behaves the way you
+meant.

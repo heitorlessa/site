@@ -1,0 +1,27 @@
+---
+// Caption wrapper for media and diagrams. For Mermaid, put a ```mermaid fence
+// inside (with blank lines around it) and set variant="diagram" to get the
+// always-light "paper" card so the neutral palette stays legible in dark mode.
+interface Props {
+  caption?: string;
+  variant?: 'diagram' | 'plain';
+  wide?: boolean;
+}
+const { caption, variant = 'plain', wide = false } = Astro.props;
+---
+
+<figure class:list={['figure', { wide }]}>
+  <div class:list={['figure__frame', { 'diagram__frame': variant === 'diagram' }]}>
+    <slot />
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .figure {
+    margin: 0;
+  }
+  .figure__frame :global(svg) {
+    margin-inline: auto;
+  }
+</style>

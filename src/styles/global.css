@@ -1,0 +1,423 @@
+@import './tokens.css';
+
+/* =========================================================================
+   RESET — minimal, modern, accessibility-friendly.
+   ========================================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Anchor scrolling clears the sticky header. */
+  scroll-padding-top: var(--space-8);
+}
+
+body {
+  min-height: 100svh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: var(--leading-body);
+  font-weight: var(--weight-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Subtle warmth so dark mode never reads as pure-black void. */
+  transition: background-color var(--motion-content) var(--ease),
+    color var(--motion-content) var(--ease);
+}
+
+img,
+picture,
+svg,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--color-selection);
+}
+
+/* =========================================================================
+   TYPOGRAPHY
+   ========================================================================= */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto; /* Fraunces opsz axis follows the size */
+  line-height: var(--leading-tight);
+  font-weight: 600;
+  letter-spacing: -0.006em;
+  text-wrap: balance; /* avoid orphan words in headings */
+}
+
+h1 {
+  font-size: var(--step-4);
+}
+h2 {
+  font-size: var(--step-3);
+}
+h3 {
+  font-size: var(--step-2);
+}
+h4 {
+  font-size: var(--step-1);
+  letter-spacing: var(--tracking-normal);
+}
+
+p,
+ul,
+ol,
+blockquote,
+figure,
+pre {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in oklab, var(--color-accent) 45%, transparent);
+  transition: color var(--motion-micro) var(--ease),
+    text-decoration-color var(--motion-micro) var(--ease);
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+  text-decoration-color: currentColor;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+/* =========================================================================
+   FOCUS — always visible, high contrast, never removed.
+   ========================================================================= */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Pointer users who click don't get a ring; keyboard users always do. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* =========================================================================
+   SKIP LINK — first tab stop, jumps to main content.
+   ========================================================================= */
+.skip-link {
+  position: absolute;
+  left: var(--space-3);
+  top: var(--space-3);
+  z-index: var(--z-skiplink);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-accent-solid);
+  color: var(--color-accent-contrast);
+  border-radius: var(--radius-md);
+  font-weight: var(--weight-bold);
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+  transform: translateY(calc(-100% - var(--space-4)));
+  transition: transform var(--motion-micro) var(--ease);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* =========================================================================
+   LAYOUT PRIMITIVES
+   ========================================================================= */
+.container {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: var(--content-pad);
+}
+
+/* Reading column: a centered measure with optional full-width "break-out"
+   children (figures, islands) via the named grid columns. Capped and centered
+   so the header (placed inside this grid) and the body share one left spine,
+   and so full-bleed children don't sprawl on ultrawide screens. */
+.prose {
+  --gap: var(--space-5);
+  max-width: 80rem;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--content-pad), 1fr)
+    [wide-start] minmax(0, calc((var(--measure-wide) - var(--measure)) / 2))
+    [content-start] min(var(--measure), 100% - 2 * var(--content-pad))
+    [content-end] minmax(0, calc((var(--measure-wide) - var(--measure)) / 2))
+    [wide-end] minmax(var(--content-pad), 1fr)
+    [full-end];
+}
+
+.prose > * {
+  grid-column: content;
+}
+
+.prose > .wide {
+  grid-column: wide;
+}
+
+.prose > .full {
+  grid-column: full;
+}
+
+/* Code and diagrams break out wider than the reading line so they get room on
+   large screens instead of being squeezed into the ~70ch text column. Islands
+   opt in per-use via a .wide wrapper (steppers stay at reading width).
+   Explicit .wide / .full still win (higher specificity). */
+.prose > pre,
+.prose > figure {
+  grid-column: wide;
+}
+
+/* Hydrated islands render as <astro-island> custom elements (created by MDX at
+   runtime, so they never carry a layout's scoped attribute). Make them block so
+   they fill their grid column instead of collapsing to inline width. */
+.prose astro-island {
+  display: block;
+}
+.prose > :is(astro-island, figure) {
+  margin-block: var(--space-7);
+}
+
+/* Vertical rhythm inside prose */
+.prose > * + * {
+  margin-top: var(--gap);
+}
+
+.prose > h2 {
+  margin-top: var(--space-8);
+  margin-bottom: calc(var(--gap) * -0.25);
+}
+
+.prose > h3 {
+  margin-top: var(--space-7);
+}
+
+.prose :is(ul, ol) {
+  padding-left: var(--space-5);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.prose li::marker {
+  color: var(--color-text-subtle);
+}
+
+.prose blockquote {
+  padding-left: var(--space-5);
+  border-left: 3px solid var(--color-accent-solid);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.prose :not(pre) > code {
+  background: var(--color-surface-2);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+  border: var(--border-thin) solid var(--color-border);
+}
+
+.prose pre {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: var(--border-thin) solid var(--color-border);
+  overflow-x: auto;
+  line-height: var(--leading-snug);
+}
+
+.prose hr {
+  border: none;
+  border-top: var(--border-thin) solid var(--color-border);
+  margin-block: var(--space-7);
+}
+
+/* Figures + captions (used by diagrams and islands). */
+figure {
+  display: grid;
+  gap: var(--space-3);
+}
+
+figcaption {
+  font-size: var(--step--1);
+  color: var(--color-text-muted);
+  line-height: var(--leading-snug);
+  text-align: center;
+}
+
+/* Build-time Mermaid SVGs render onto an always-light "paper" card so the
+   neutral palette stays legible in both themes. */
+svg[id^='mermaid'] {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+}
+
+/* The diagram card uses the SAME surface + radius as the island cards, so a
+   build-time diagram and a hand-built island read as one family in both themes.
+   Bare ```mermaid fences land as a direct prose child; <Figure variant="diagram">
+   wraps the frame. */
+.prose > svg[id^='mermaid'],
+.diagram__frame {
+  background: var(--color-surface);
+  border: var(--border-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Chip geometry to match the islands: rounded nodes, consistent strokes. */
+svg[id^='mermaid'] .node rect,
+svg[id^='mermaid'] .node polygon,
+svg[id^='mermaid'] .node circle,
+svg[id^='mermaid'] .node path,
+svg[id^='mermaid'] .cluster rect {
+  rx: 10px;
+  ry: 10px;
+  stroke-width: 1.5px;
+}
+svg[id^='mermaid'] .edgePath .path,
+svg[id^='mermaid'] .flowchart-link {
+  stroke-width: 1.6px;
+}
+svg[id^='mermaid'] .nodeLabel,
+svg[id^='mermaid'] .edgeLabel {
+  font-weight: 400;
+}
+
+/* Dark mode: the SVG is colour-baked for light at build time, so recolour it to
+   the dark island palette. Mermaid injects an #id-scoped <style>, so these need
+   !important to win. Wrapped in a mixin-style block applied for the explicit
+   theme AND the no-JS OS default. */
+:root[data-theme='dark'] svg[id^='mermaid'] :is(.node rect, .node polygon, .node circle, .node ellipse, .node path) {
+  fill: var(--color-accent-wash) !important;
+  stroke: var(--color-accent) !important;
+}
+:root[data-theme='dark'] svg[id^='mermaid'] :is(.nodeLabel, .label, span, p, foreignObject div) {
+  color: var(--color-text) !important;
+  fill: var(--color-text) !important;
+}
+:root[data-theme='dark'] svg[id^='mermaid'] :is(.edgeLabel, .edgeLabel p, .edgeLabel rect) {
+  background-color: var(--color-surface) !important;
+  fill: var(--color-surface) !important;
+}
+:root[data-theme='dark'] svg[id^='mermaid'] :is(.marker, .arrowheadPath) {
+  fill: var(--color-text-muted) !important;
+  stroke: var(--color-text-muted) !important;
+}
+:root[data-theme='dark'] svg[id^='mermaid'] :is(.flowchart-link, .edgePath .path) {
+  stroke: var(--color-text-muted) !important;
+  fill: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) svg[id^='mermaid'] :is(.node rect, .node polygon, .node circle, .node ellipse, .node path) {
+    fill: var(--color-accent-wash) !important;
+    stroke: var(--color-accent) !important;
+  }
+  :root:not([data-theme]) svg[id^='mermaid'] :is(.nodeLabel, .label, span, p, foreignObject div) {
+    color: var(--color-text) !important;
+    fill: var(--color-text) !important;
+  }
+  :root:not([data-theme]) svg[id^='mermaid'] :is(.edgeLabel, .edgeLabel p, .edgeLabel rect) {
+    background-color: var(--color-surface) !important;
+    fill: var(--color-surface) !important;
+  }
+  :root:not([data-theme]) svg[id^='mermaid'] :is(.marker, .arrowheadPath) {
+    fill: var(--color-text-muted) !important;
+    stroke: var(--color-text-muted) !important;
+  }
+  :root:not([data-theme]) svg[id^='mermaid'] :is(.flowchart-link, .edgePath .path) {
+    stroke: var(--color-text-muted) !important;
+    fill: none !important;
+  }
+}
+
+/* Narrow screens: let a wide diagram scroll horizontally at a legible minimum
+   width instead of shrinking its labels into illegibility. */
+@media (max-width: 40rem) {
+  .diagram__frame {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+  .diagram__frame svg[id^='mermaid'] {
+    min-width: 30rem;
+  }
+}
+
+/* =========================================================================
+   UTILITIES
+   ========================================================================= */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.eyebrow {
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-accent);
+  font-weight: var(--weight-bold);
+}
+
+/* =========================================================================
+   REDUCED MOTION — kill non-essential animation, including the replayable
+   widgets (they listen to this query in JS too and park on a static frame).
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

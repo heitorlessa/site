@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_AUTHOR } from '../consts';
+---
+
+<BaseLayout title="About">
+  <article class="prose page">
+    <header class="page__header">
+      <h1>About</h1>
+      <p class="page__lede">
+        I'm {SITE_AUTHOR}. I write for a global, multilingual audience: crisp
+        sentences, plain English, no walls of text.
+      </p>
+    </header>
+    <p>
+      This site is an experiment in <strong>reading first</strong>. Most of the
+      web fights for your attention. These notes try the opposite — calm
+      typography, no popups, no cookie banners, no autoplaying anything, and no
+      third-party trackers. Pages ship zero JavaScript unless an idea genuinely
+      needs to move.
+    </p>
+    <h2>When prose isn't enough</h2>
+    <p>
+      Some ideas are processes, not paragraphs. For those, the page hydrates a
+      small interactive “island”: a stepper to walk a concept, a replayable
+      sequence diagram you can scrub, or a loop you can watch cycle. Each one is
+      keyboard-operable, respects reduced-motion, and degrades to a static frame
+      with a full text description when scripting is off.
+    </p>
+    <h2>Principles</h2>
+    <ul>
+      <li>Body text at a comfortable size and line-height, on a ~66-character measure.</li>
+      <li>Light and dark are both first-class; the light theme is bright but never glaring.</li>
+      <li>Contrast targets WCAG AAA for body text where feasible.</li>
+      <li>Every element earns its place — decorative chrome doesn't ship.</li>
+    </ul>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-8);
+  }
+  .page__header {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+  }
+  .page__lede {
+    font-size: var(--step-1);
+    color: var(--color-text);
+    line-height: var(--leading-snug);
+  }
+</style>

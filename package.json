@@ -1,0 +1,32 @@
+{
+  "name": "notes-by-heitor",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "playwright test",
+    "lhci": "lhci autorun"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.0",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/vue": "^7.0.0",
+    "@fontsource-variable/fraunces": "^5.2.9",
+    "@fontsource/atkinson-hyperlegible": "^5.2.8",
+    "astro": "^7.0.3",
+    "playwright": "^1.61.1",
+    "rehype-mermaid": "^3.0.0",
+    "vue": "^3.5.39"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.61.1"
+  }
+}
