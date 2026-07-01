@@ -5,11 +5,15 @@ export const SITE_DESCRIPTION =
 export const SITE_AUTHOR = 'Heitor Lessa';
 export const SITE_LANG = 'en';
 
-// Base path (e.g. "/site/") injected by Astro from astro.config `base`.
-// Joins a path onto the base so internal links work under a sub-path deploy.
+// Base path (e.g. "/site") injected by Astro from astro.config `base`.
+// Joins a path onto the base with exactly one slash between them, so internal
+// links work under a sub-path deploy regardless of whether BASE_URL has a
+// trailing slash ("/site" vs "/site/").
 export function withBase(path = ''): string {
-  const base = import.meta.env.BASE_URL; // always ends with "/"
-  return (base + String(path).replace(/^\//, '')).replace(/\/{2,}/g, '/');
+  const base = import.meta.env.BASE_URL.replace(/\/+$/, ''); // drop trailing slash(es)
+  const rest = String(path).replace(/^\/+/, ''); // drop leading slash(es)
+  const joined = rest ? `${base}/${rest}` : `${base}/`;
+  return joined.replace(/([^:]\/)\/+/g, '$1'); // collapse accidental doubles
 }
 
 export const NAV_LINKS = [
