@@ -39,7 +39,7 @@ every step renders stacked so nothing is hidden.
 
 <Stepper
   id="demo-stepper"
-  client:visible
+  client:visible={{ rootMargin: '500px' }}
   label="How an interactive island hydrates"
   steps={[
     { title: 'Server renders HTML', body: '<p>Astro renders the component to static HTML at build time. The reader sees content instantly — no waiting on JavaScript.</p>' },

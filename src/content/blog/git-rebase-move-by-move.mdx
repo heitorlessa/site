@@ -61,7 +61,7 @@ read and to bisect later.
 
 <Stepper
   id="rebase-steps"
-  client:visible
+  client:visible={{ rootMargin: '500px' }}
   label="How a rebase replays commits"
   steps={[
     { title: 'Find the common ancestor', body: '<p>Git finds where your branch and the new base diverged — here, commit <code>B</code>.</p>' },

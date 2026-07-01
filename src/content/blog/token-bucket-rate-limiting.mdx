@@ -46,6 +46,7 @@ long-run average no matter what.
 When the bucket runs dry, a good API doesn't just fail — it tells the client
 *when* to try again. Step through a client that hits the limit and backs off.
 
+<div class="wide">
 <SequencePlayer
   client:visible
   title="Hitting the limit, then backing off"
@@ -64,6 +65,7 @@ When the bucket runs dry, a good API doesn't just fail — it tells the client
     { from: 'g', to: 'c', label: '200 OK', note: 'Back to normal.' },
   ]}
 />
+</div>
 
 ## In code
 

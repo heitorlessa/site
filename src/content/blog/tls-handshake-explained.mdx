@@ -26,7 +26,7 @@ working together.
 
 <Stepper
   id="tls-ideas"
-  client:visible
+  client:visible={{ rootMargin: '500px' }}
   label="The four ideas behind the handshake"
   steps={[
     { title: 'Identity', body: '<p>The server proves who it is with a <strong>certificate</strong> — a public key signed by an authority your browser already trusts. An impostor can copy the certificate, but not the matching private key.</p>' },

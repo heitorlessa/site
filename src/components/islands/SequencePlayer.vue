@@ -274,11 +274,15 @@ function dir(m: Message): 1 | -1 {
 .seq__msg-line {
   stroke: var(--color-text-muted);
   stroke-width: 2;
+  transition:
+    stroke var(--motion-content) var(--ease),
+    stroke-width var(--motion-content) var(--ease);
 }
 .seq__msg-label {
   fill: var(--color-text-muted);
   font-size: 14px;
   font-family: var(--font-body);
+  transition: fill var(--motion-content) var(--ease);
 }
 
 /* Active message pops in the accent color. */

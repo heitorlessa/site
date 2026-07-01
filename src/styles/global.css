@@ -172,7 +172,7 @@ pre {
    and so full-bleed children don't sprawl on ultrawide screens. */
 .prose {
   --gap: var(--space-5);
-  max-width: 72rem;
+  max-width: 80rem;
   margin-inline: auto;
   display: grid;
   grid-template-columns:
@@ -194,6 +194,15 @@ pre {
 
 .prose > .full {
   grid-column: full;
+}
+
+/* Code and diagrams break out wider than the reading line so they get room on
+   large screens instead of being squeezed into the ~70ch text column. Islands
+   opt in per-use via a .wide wrapper (steppers stay at reading width).
+   Explicit .wide / .full still win (higher specificity). */
+.prose > pre,
+.prose > figure {
+  grid-column: wide;
 }
 
 /* Hydrated islands render as <astro-island> custom elements (created by MDX at

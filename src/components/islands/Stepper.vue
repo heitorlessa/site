@@ -209,19 +209,30 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', readHash));
   padding-top: var(--space-4);
 }
 
-/* Interactive: collapse to one step at a time, no borders between. */
+/* Interactive: stack every step in the SAME grid cell so the card height stays
+   constant (no layout jump between steps) and the active step crossfades in. */
 .is-interactive .stepper__steps {
-  /* keep height stable-ish across steps */
+  display: grid;
+  align-items: start;
 }
 .is-interactive .step {
-  display: none;
+  grid-area: 1 / 1;
   border-top: none;
   margin-top: 0;
   padding-top: var(--space-2);
+  /* Inactive steps are hidden immediately (kept out of the a11y tree); only the
+     entering step animates in. No layout shift — all steps share one cell. */
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(6px);
 }
 .is-interactive .step--active {
-  display: block;
-  animation: fade var(--motion-content) var(--ease);
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--motion-content) var(--ease),
+    transform var(--motion-content) var(--ease);
 }
 
 .step__title {
@@ -293,19 +304,11 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', readHash));
   color: var(--color-accent-contrast);
 }
 
-@keyframes fade {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 @media (prefers-reduced-motion: reduce) {
+  .is-interactive .step,
   .is-interactive .step--active {
-    animation: none;
+    transition: none;
+    transform: none;
   }
 }
 </style>

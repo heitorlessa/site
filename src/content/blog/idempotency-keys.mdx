@@ -39,6 +39,7 @@ flowchart LR
 Step through a retry with an idempotency key. The second request carries the
 *same* key, so the server returns the first result instead of charging again.
 
+<div class="wide">
 <SequencePlayer
   client:visible
   title="A safe retry"
@@ -57,6 +58,7 @@ Step through a retry with an idempotency key. The second request carries the
     { from: 's', to: 'c', label: '200 (same result)', note: 'It replays the stored response — no second charge.' },
   ]}
 />
+</div>
 
 ## The server logic
 
